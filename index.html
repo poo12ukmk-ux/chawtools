@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>คำนวณส่วนแบ่งมรดกไทย ทายาทโดยธรรม | ป.พ.พ. ม.1629-1645</title>
 <meta name="description" content="เครื่องมือคำนวณส่วนแบ่งมรดกตามกฎหมายไทยกรณีไม่มีพินัยกรรม ตาม ป.พ.พ. มาตรา 1629-1645 กดเลือกทายาท ดูผลทันที ใช้ฟรี">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@700&family=Sarabun:wght@400;600;700&display=swap">
 <!-- Open Graph: เปลี่ยน URL ให้ตรงกับเว็บจริงของคุณ และเพิ่ม og:image (ขนาดแนะนำ 1200x630) -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="คำนวณส่วนแบ่งมรดกไทย">
@@ -14,87 +14,206 @@
 <!-- <meta property="og:url" content="https://ชื่อคุณ.github.io/inheritance/"> -->
 <!-- <meta property="og:image" content="https://ชื่อคุณ.github.io/inheritance/og.png"> -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#1e3a8a">
+<meta name="theme-color" content="#0b1f5c">
 <style>
-:root{--bg:#f1f5f9;--card:#fff;--ink:#0f172a;--mute:#64748b;--line:#e2e8f0;--pri:#1e3a8a;--acc:#2563eb;--ok:#16a34a;--warn:#d97706}
+:root{
+  --navy:#0b1f5c;--navy-mid:#12407a;--gold:#e3cd94;--gold-line:rgba(227,205,148,.55);--white:#ffffff;--bg:#eef1f5;
+  --card:#fff;--ink:#14213d;--mute:#4f5b6e;--line:#dde3ea;--zebra:#f7f9fb;
+  --pri:var(--navy);--acc:var(--navy-mid);--ok:#1e6b3a;--warn:#8a4b06;--stop:#a11d1d;
+  --hh:64px;--radius:16px;--maxw:720px;
+  --serif:"Noto Serif Thai","Sarabun",Georgia,serif;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Sarabun","Noto Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
-header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:28px 16px 36px;text-align:center}
-header h1{margin:0 0 6px;font-size:1.6rem}
-header p{margin:0 auto;max-width:640px;font-size:.92rem;opacity:.9}
-main{max-width:720px;margin:-18px auto 40px;padding:0 12px}
-.card{background:var(--card);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:16px;margin-bottom:14px}
-.card h2{margin:0 0 2px;font-size:1.05rem;display:flex;align-items:center;gap:8px}
-.badge{background:var(--pri);color:#fff;border-radius:99px;font-size:.75rem;padding:1px 9px}
-.hint{color:var(--mute);font-size:.85rem;margin:2px 0 10px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Sarabun","Noto Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.65;overflow-x:hidden}
+body.kopen{overflow:hidden}
+button{font:inherit}
+:focus-visible{outline:3px solid var(--navy-mid);outline-offset:2px}
+
+/* ---------- Header ---------- */
+.topbar{position:sticky;top:0;z-index:50;height:var(--hh);display:flex;align-items:center;gap:12px;background:var(--navy);color:var(--white);padding:0 max(12px,calc((100% - 1040px)/2));border-bottom:1px solid var(--gold-line)}
+.logo{flex:none;width:36px;height:36px}
+.brandbox{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;line-height:1.2}
+.brand{font-family:var(--serif);font-weight:700;font-size:1.12rem;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brandsub{font-size:.78rem;color:var(--gold);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#menuBtn{flex:none;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--gold-line);border-radius:999px;background:transparent;color:var(--gold);font-size:1.35rem;line-height:1;cursor:pointer}
+#menuBtn:hover{background:rgba(227,205,148,.1)}
+.topbar :focus-visible,#kpanel :focus-visible{outline-color:var(--gold)}
+
+/* ---------- Knowledge panel ---------- */
+#scrim{position:fixed;left:0;right:0;bottom:0;top:var(--hh);background:rgba(6,16,48,.55);z-index:30;opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+#kpanel{position:fixed;left:0;right:0;top:var(--hh);z-index:40;max-height:calc(100vh - var(--hh));max-height:calc(100dvh - var(--hh));overflow-y:auto;overscroll-behavior:contain;background:var(--navy-mid);color:var(--white);border-bottom:1px solid var(--gold-line);transform:translateY(-100%);visibility:hidden;transition:transform .28s ease,visibility 0s .28s}
+body.kopen #kpanel{transform:none;visibility:visible;transition:transform .28s ease}
+body.kopen #scrim{opacity:1;visibility:visible;transition:opacity .25s}
+.kwrap{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:minmax(190px,34%) 1fr;gap:0}
+.kcol-list{border-right:1px solid var(--gold-line);padding:16px 0 20px}
+.khead{margin:0 16px 8px;font-size:.9rem;font-weight:600;color:var(--gold);letter-spacing:.04em}
+#klist{list-style:none;margin:0;padding:0}
+#klist li{border-top:1px solid var(--gold-line)}
+#klist li:last-child{border-bottom:1px solid var(--gold-line)}
+.kitem{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:6px 16px;border:0;border-left:4px solid transparent;background:none;color:var(--white);text-align:left;font-size:1rem;cursor:pointer}
+.kitem:hover{background:rgba(255,255,255,.06)}
+.kitem[aria-current="true"]{border-left-color:var(--gold);background:rgba(11,31,92,.45)}
+.kk{flex:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--gold);border-radius:999px;color:var(--gold);font-weight:700;font-size:.9rem}
+.kcol-view{padding:20px 20px 28px;min-width:0}
+.kback{display:none;align-items:center;min-height:44px;padding:0 18px;margin:0 0 10px;border:1px solid var(--gold-line);border-radius:999px;background:transparent;color:var(--gold);cursor:pointer}
+#kvtitle{margin:0 0 10px;font-family:var(--serif);font-size:1.2rem;color:var(--gold);line-height:1.4}
+#kvtitle:focus{outline:none}
+#kvbody{font-size:1rem;color:var(--white)}
+#kvbody p{margin:0 0 12px}
+#kvbody table{margin:8px 0;font-size:1rem;color:var(--white)}
+#kvbody th{background:var(--navy);color:var(--gold);border-bottom:1px solid var(--gold-line)}
+#kvbody td{border-bottom:1px solid rgba(227,205,148,.25)}
+#kvbody tr:nth-child(even) td{background:rgba(255,255,255,.05)}
+.draft{margin-top:14px;padding-top:10px;border-top:1px solid var(--gold-line);font-size:.95rem;color:#f1e6c6}
+@media (max-width:479.98px){
+  .kwrap{display:block}
+  .kcol-list{border-right:0}
+  .kcol-view{display:none}
+  #kpanel.detail .kcol-list{display:none}
+  #kpanel.detail .kcol-view{display:block}
+  .kback{display:inline-flex}
+  .kitem[aria-current="true"]{border-left-color:transparent;background:none}
+}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;background:linear-gradient(170deg,var(--navy) 0%,var(--navy) 55%,var(--navy-mid) 100%);color:var(--white);text-align:center;padding:36px 20px 0}
+.hero-rule{width:56px;height:1px;background:var(--gold);margin:0 auto 14px;border:0}
+.hero h1{margin:0 0 8px;font-family:var(--serif);font-weight:700;font-size:1.6rem;line-height:1.35}
+.hero p{margin:0 auto;max-width:var(--maxw);font-size:1rem;color:rgba(255,255,255,.88)}
+.wave{display:block;width:100%;height:48px;margin-top:22px}
+
+/* ---------- Main / cards ---------- */
+main{max-width:var(--maxw);margin:0 auto 48px;padding:4px 16px 0}
+.card{background:var(--card);border:1px solid var(--gold-line);border-radius:var(--radius);padding:20px 18px;margin-bottom:16px}
+.card h2{margin:0 0 4px;font-size:1.12rem;color:var(--navy);display:flex;align-items:center;gap:10px;line-height:1.4}
+.badge{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 8px;border:1px solid var(--gold);border-radius:999px;background:var(--navy);color:var(--gold);font-size:.9rem;font-weight:700}
+.hint{color:var(--mute);font-size:1rem;margin:4px 0 12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
 .row:first-of-type{border-top:0}
-.row label{flex:1;font-size:.95rem}
-.stepper{display:flex;align-items:center;gap:0}
-.stepper button{width:40px;height:40px;border:1px solid var(--line);background:#f8fafc;font-size:1.3rem;cursor:pointer;color:var(--pri)}
-.stepper button:first-child{border-radius:10px 0 0 10px}
-.stepper button:last-child{border-radius:0 10px 10px 0}
-.stepper button:active{background:#e2e8f0}
-.stepper span{min-width:44px;height:40px;display:flex;align-items:center;justify-content:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-weight:600}
-.branch{border-left:3px solid var(--acc);background:#f8fafc;border-radius:0 10px 10px 0;margin:6px 0 6px 10px;padding:4px 10px}
-.branch>.t{font-size:.82rem;color:var(--acc);font-weight:600;margin-top:4px}
-.check{display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:6px 0}
-.check input{width:22px;height:22px;margin-top:2px;accent-color:var(--acc)}
-.locked{opacity:.45;pointer-events:none}
-.lockmsg{font-size:.85rem;color:var(--warn);margin-top:6px}
-#result{border-left:6px solid var(--ok)}
-#result.warn{border-left-color:var(--warn)}
-#result h2{font-size:1.1rem}
-.verdict{margin:6px 0 12px;font-size:.95rem}
-.bar{display:flex;height:26px;border-radius:8px;overflow:hidden;margin:8px 0 12px;background:var(--line)}
+.row label{flex:1;min-width:0;font-size:1rem}
+.stepper{flex:none;display:flex;align-items:center}
+.stepper button{width:44px;height:44px;border:1px solid var(--navy);background:#fff;font-size:1.3rem;cursor:pointer;color:var(--navy);display:flex;align-items:center;justify-content:center}
+.stepper button:first-child{border-radius:999px 0 0 999px}
+.stepper button:last-child{border-radius:0 999px 999px 0}
+.stepper button:hover{background:var(--bg)}
+.stepper button:active{background:#dfe5ee}
+.stepper span{min-width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-top:1px solid var(--navy);border-bottom:1px solid var(--navy);font-weight:700;color:var(--navy)}
+.branch{border-left:2px solid var(--gold);background:#fbfaf6;border-radius:0 12px 12px 0;margin:6px 0 6px 8px;padding:4px 10px}
+.branch>.t{font-size:.95rem;color:var(--navy-mid);font-weight:600;margin-top:4px}
+.check{display:flex;gap:12px;align-items:flex-start;cursor:pointer;padding:8px 0;font-size:1rem}
+.check input{flex:none;width:22px;height:22px;margin-top:3px;accent-color:var(--navy)}
+.check small{font-size:.95rem}
+.locked{opacity:.5;pointer-events:none}
+.lockmsg{font-size:1rem;color:var(--warn);margin-top:6px}
+#result{border-left:4px solid var(--navy)}
+#result.warn{border-left-color:#b07a1e}
+#result h2{font-size:1.2rem}
+.verdict{margin:6px 0 14px;font-size:1rem}
+.bar{display:flex;height:22px;border-radius:999px;overflow:hidden;margin:10px 0 14px;background:var(--line);border:1px solid var(--gold-line)}
 .bar div{height:100%}
-table{width:100%;border-collapse:collapse;font-size:.9rem}
-th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center}
-th{background:#f1f5f9;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:1rem}
+th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:center}
+th{background:var(--navy);color:var(--white);font-weight:600}
+tbody tr:nth-child(even) td{background:var(--zebra)}
 td:first-child,th:first-child{text-align:left}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
-tfoot td{font-weight:700;background:#f8fafc}
-.btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.btns button{flex:1;min-width:130px;padding:11px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:.95rem;cursor:pointer;font-family:inherit}
-.btns .pri{background:var(--pri);color:#fff;border-color:var(--pri)}
-.notes{font-size:.82rem;color:var(--mute)}
-.notes ul{padding-left:18px;margin:6px 0}
-input.num{width:150px;max-width:45%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;font:inherit;text-align:right}
-input.num:focus,button:focus-visible,.check input:focus-visible{outline:3px solid #93c5fd;outline-offset:1px}
-.alert{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:8px 12px;margin:8px 0;font-size:.88rem}
-.alert ul{margin:4px 0 0;padding-left:18px}
-.steps{font-size:.86rem;background:#f8fafc;border-radius:10px;padding:8px 12px;margin-top:12px}
+tfoot td{font-weight:700;background:var(--bg);color:var(--navy)}
+.btns{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.btns button{flex:1 1 140px;min-height:46px;padding:10px 18px;border-radius:999px;border:1px solid var(--navy);background:var(--white);color:var(--navy);font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btns button:hover{background:var(--bg)}
+.btns .pri{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.btns .pri:hover{background:var(--navy-mid)}
+.notes{font-size:1rem;color:var(--ink)}
+.notes>b{color:var(--navy);font-size:1.05rem}
+.notes ul{padding-left:20px;margin:8px 0 0}
+.notes li{margin-bottom:6px}
+input.num{width:160px;max-width:45%;min-height:44px;padding:9px 12px;border:1px solid #b9c3d0;border-radius:12px;font:inherit;text-align:right;color:var(--ink);background:#fff}
+input.num:focus{outline:3px solid var(--navy-mid);outline-offset:1px;border-color:var(--navy)}
+.alert{background:#fbf6e8;border:1px solid var(--gold);border-radius:12px;padding:10px 14px;margin:10px 0;font-size:1rem}
+.alert ul{margin:4px 0 0;padding-left:20px}
+.steps{font-size:1rem;background:var(--zebra);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:14px}
 .steps ol{margin:4px 0 0;padding-left:20px}
-.audit{font-size:.84rem;background:#f8fafc;border-radius:10px;padding:8px 12px;margin-top:12px}
+.audit{font-size:1rem;background:var(--zebra);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:14px}
+.audit>b{color:var(--navy)}
 .audit ol{list-style:none;margin:6px 0 0;padding:0}
-.audit li{display:flex;gap:8px;padding:5px 0;border-top:1px solid var(--line)}
+.audit li{display:flex;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
 .audit li:first-child{border-top:0}
-.audit .ic{width:20px;font-weight:700;text-align:center}
-.audit li.ok .ic{color:var(--ok)}.audit li.warn .ic{color:var(--warn)}.audit li.stop .ic{color:#dc2626}.audit li.skip{opacity:.55}
-.audit small{color:var(--mute)}
-.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid var(--line);padding:8px 12px}
-.brand{flex:1;font-weight:600;color:var(--pri);font-size:1.05rem}
-#menuBtn{width:44px;height:44px;border:1px solid var(--line);border-radius:10px;background:#f8fafc;font-size:1.4rem;cursor:pointer;color:var(--pri)}
-#scrim{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:30;display:none}
-#kpanel{position:fixed;top:0;right:0;bottom:0;width:min(420px,92vw);background:#fff;z-index:40;transform:translateX(100%);transition:transform .2s;overflow-y:auto;padding:16px;box-shadow:-4px 0 16px rgba(0,0,0,.15)}
-body.kopen #kpanel{transform:none}body.kopen #scrim{display:block}
-#kpanel h2{margin:0 0 10px;font-size:1.1rem}
-.kitem{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:12px;margin-bottom:8px;border:1px solid var(--line);border-radius:10px;background:#f8fafc;font:inherit;cursor:pointer}
-.kitem b{background:var(--pri);color:#fff;border-radius:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex:none}
-.kclose,.kback{border:0;background:none;font:inherit;color:var(--acc);cursor:pointer;padding:6px 0}
-#kbody{font-size:.92rem}#kbody table{font-size:.85rem;margin:8px 0}
-.draft{font-size:.78rem;color:var(--warn);margin-top:10px}
-footer{text-align:center;font-size:.78rem;color:var(--mute);padding:0 16px 30px}
+.audit li>div{min-width:0}
+.audit .ic{flex:none;width:20px;font-weight:700;text-align:center}
+.audit li.ok .ic{color:var(--ok)}.audit li.warn .ic{color:var(--warn)}.audit li.stop .ic{color:var(--stop)}.audit li.skip{opacity:.7}
+.audit small{color:var(--mute);font-size:.95rem}
+
+.pie{margin-top:14px;padding:12px 14px;border:1px solid var(--gold-line);border-radius:12px;background:#fff}
+.pie>b{color:var(--navy)}
+.pie-in{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:10px}
+.pie svg{flex:none;width:150px;height:150px;margin:0 auto}
+.pie ul{flex:1 1 220px;min-width:0;list-style:none;margin:0;padding:0}
+.pie li{display:flex;align-items:flex-start;gap:6px;padding:7px 0;border-top:1px solid var(--line)}
+.pie li:first-child{border-top:0}
+.pie li .dot{flex:none;margin-top:8px}
+.pie .pw{flex:1;min-width:0}.pie .pw small{display:block;color:var(--mute);font-size:.95rem}
+.pie .pv{flex:none;text-align:right;font-weight:700;color:var(--navy)}.pie .pv small{display:block;font-weight:400;color:var(--mute);font-size:.95rem}
+.pie-tot{margin-top:8px;padding-top:8px;border-top:1px solid var(--gold-line);text-align:right;font-weight:700;color:var(--navy)}
+
+/* ---------- Footer ---------- */
+footer{background:var(--navy);color:rgba(255,255,255,.78);border-top:1px solid var(--gold-line);padding:28px 20px 36px;text-align:center;font-size:1rem}
+footer .disc{max-width:var(--maxw);margin:0 auto 10px;padding:10px 16px;border:1px solid var(--gold-line);border-radius:12px;color:var(--white);font-weight:600}
+footer .disc strong{color:var(--gold)}
+footer p{max-width:var(--maxw);margin:0 auto}
+
+@media (min-width:768px){
+  .hero{padding-top:52px}
+  .hero h1{font-size:2rem}
+  .wave{height:64px}
+  .card{padding:24px 26px}
+  .brand{font-size:1.25rem}
+}
+@media (max-width:374.98px){
+  .brand{font-size:1.02rem}
+  .card{padding:18px 14px}
+  input.num{max-width:50%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
 <body>
-<div class="topbar"><span class="brand" id="brand"></span><button type="button" id="menuBtn" aria-label="เปิดเมนูความรู้เรื่องมรดก" aria-expanded="false" aria-controls="kpanel">☰</button></div>
-<div id="scrim"></div>
-<aside id="kpanel" role="dialog" aria-label="ความรู้เรื่องการแบ่งมรดก" aria-hidden="true"><button type="button" class="kclose" id="kclose">✕ ปิด</button><div id="kbody"></div></aside>
-<header>
-  <h1>⚖️ คำนวณส่วนแบ่งมรดกไทย</h1>
-  <p>ทายาทโดยธรรมตาม ป.พ.พ. มาตรา 1629-1645 กรณีไม่มีพินัยกรรมหรือพินัยกรรมไม่ครบ กดเลือกแล้วดูผลทันที</p>
+<header class="topbar">
+  <svg class="logo" viewBox="0 0 40 40" aria-hidden="true" focusable="false" fill="none" stroke="#e3cd94" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="20" cy="6" r="1.8" fill="#e3cd94" stroke="none"/>
+    <path d="M20 8v24M8 12h24M13 33h14"/>
+    <path d="M10 12 5 22h10zM30 12l-5 10h10z"/>
+    <path d="M5 22a5 3 0 0 0 10 0M25 22a5 3 0 0 0 10 0"/>
+  </svg>
+  <div class="brandbox">
+    <span class="brand" id="brand"></span>
+    <span class="brandsub">ทายาทโดยธรรม · ป.พ.พ. ม.1629–1645</span>
+  </div>
+  <button type="button" id="menuBtn" aria-label="เปิดเมนูความรู้เรื่องมรดก" aria-expanded="false" aria-controls="kpanel"><span aria-hidden="true" id="menuIcon">☰</span></button>
 </header>
+<div id="scrim"></div>
+<nav id="kpanel" aria-label="ความรู้เรื่องการแบ่งมรดก">
+  <div class="kwrap">
+    <div class="kcol-list">
+      <p class="khead" id="khead">ความรู้เรื่องการแบ่งมรดก</p>
+      <ul id="klist" aria-labelledby="khead"></ul>
+    </div>
+    <div class="kcol-view" id="kview" aria-live="polite">
+      <button type="button" class="kback" id="kback">‹ กลับ</button>
+      <h2 id="kvtitle" tabindex="-1"></h2>
+      <div id="kvbody"></div>
+      <div class="draft">เนื้อหาสรุปเบื้องต้น ไม่ใช่คำปรึกษาทางกฎหมาย</div>
+    </div>
+  </div>
+</nav>
+<section class="hero">
+  <hr class="hero-rule">
+  <h1>คำนวณส่วนแบ่งมรดก</h1>
+  <p>ทายาทโดยธรรมกรณีไม่มีพินัยกรรม ตาม ป.พ.พ. มาตรา 1629–1645 เลือกทายาทแล้วดูผลทันที</p>
+  <svg class="wave" viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 34C180 6 360 6 540 26s360 34 540 18 270-30 360-24V64H0z" fill="#eef1f5"/></svg>
+</section>
 <main>
   <div id="form"></div>
   <div id="result" class="card" aria-live="polite"></div>
@@ -111,7 +230,10 @@ footer{text-align:center;font-size:.78rem;color:var(--mute);padding:0 16px 30px}
     </ul>
   </div>
 </main>
-<footer>เครื่องมือนี้เพื่อความเข้าใจเบื้องต้นเท่านั้น ไม่ใช่คำปรึกษาทางกฎหมาย ควรตรวจสอบตัวบทฉบับปัจจุบันและปรึกษาทนายความก่อนดำเนินการจริง</footer>
+<footer>
+  <div class="disc"><strong>คำเตือน:</strong> เพื่อความเข้าใจเบื้องต้น ไม่ใช่คำปรึกษาทางกฎหมาย</div>
+  <p>ควรตรวจสอบตัวบทฉบับปัจจุบันและปรึกษาทนายความก่อนดำเนินการจริง</p>
+</footer>
 
 <script>
 // ==LOGIC==
@@ -282,7 +404,7 @@ const freshMoney=()=>({personal:'',joint:'',jointDebt:'',personalDebt:''});
 const freshWarn=()=>({will:false,disq:false,dispute:false,unclear:false});
 const state={spouse:false,children:node(),parents:0,fullSib:node(),halfSib:node(),grand:0,uncles:node(),money:freshMoney(),warn:freshWarn()};
 const getNode=p=>p.split("/").reduce((o,k,i)=>i===0?o[k]:o.kids[+k],state);
-const COLORS=["#2563eb","#16a34a","#d97706","#dc2626","#7c3aed","#0891b2","#db2777","#65a30d","#ea580c","#4f46e5"];
+const COLORS=["#0b1f5c","#b08d3c","#3f6e9e","#7a5a1e","#5b7a99","#8c6d2f","#24467a","#a3895a","#6b86a6","#4a3a12"];
 
 // ---------- render ----------
 const step=(act,path,val,min=0)=>`<div class="stepper"><button type="button" data-act="${act}-" data-p="${path}" aria-label="ลด">−</button><span>${val}</span><button type="button" data-act="${act}+" data-p="${path}" aria-label="เพิ่ม">+</button></div>`;
@@ -349,6 +471,20 @@ function buildAudit(r,est,stop,moneyInput){
   st.push({t:"6 แสดงผลรายบุคคล",s:off?"skip":r.shares.length?"ok":"skip",x:off?SK:r.shares.length?"แสดงสัดส่วน"+(moneyInput&&!(w.unclear||est.flags.includes("jointDebtExceeds"))?" จำนวนเงิน และเปอร์เซ็นต์":""):"ไม่มีผู้รับ"});
   return `<div class="audit"><b>ลำดับการตรวจ 6 ขั้น</b><ol>`+st.map(x=>`<li class="${x.s}"><span class="ic">${ICON[x.s]}</span><div>${x.t}<br><small>${x.x}</small></div></li>`).join("")+`</ol></div>`;
 }
+function pieHtml(r,est){
+  // แผนภูมิวงกลม: ยอดที่แต่ละกลุ่มทายาทได้รับจริง (คู่สมรส = มรดก + ส่วนสินสมรสของตนเอง)
+  const sl=r.shares.map((s,i)=>{const each=est.estate*s.each.n/s.each.d;const own=s.kind==="spouse"&&state.spouse?est.spouseOwn:0;
+    return {who:s.who,count:s.count,each,own,v:each*s.count+own,c:COLORS[i%COLORS.length]}}).filter(x=>x.v>0);
+  const tot=sl.reduce((a,x)=>a+x.v,0);if(!(tot>0))return "";
+  let a0=-Math.PI/2,paths="";
+  const pt=a=>(60+56*Math.cos(a)).toFixed(3)+" "+(60+56*Math.sin(a)).toFixed(3);
+  sl.forEach(x=>{const f=x.v/tot;
+    if(f>=0.9999){paths+=`<circle cx="60" cy="60" r="56" fill="${x.c}"/>`;return}
+    const a1=a0+f*2*Math.PI;paths+=`<path d="M60 60L${pt(a0)}A56 56 0 ${f>0.5?1:0} 1 ${pt(a1)}Z" fill="${x.c}" stroke="#fff" stroke-width="1.5"/>`;a0=a1});
+  const leg=sl.map(x=>`<li><span class="dot" style="background:${x.c}"></span><span class="pw">${x.who}${x.count>1?` (${x.count} คน คนละ ${baht(x.each)} บาท)`:""}${x.own>0?`<small>มรดก ${baht(x.each)} + ส่วนสินสมรสของตนเอง ${baht(x.own)} บาท</small>`:""}</span><span class="pv">${baht(x.v)} บาท<small>${(x.v/tot*100).toFixed(2)}%</small></span></li>`).join("");
+  const aria="สัดส่วนยอดรวมที่ได้รับ: "+sl.map(x=>x.who+" "+(x.v/tot*100).toFixed(1)+"%").join(", ");
+  return `<div class="pie"><b>แผนภูมิยอดรวมที่แต่ละฝ่ายได้รับ</b><div class="pie-in"><svg viewBox="0 0 120 120" role="img" aria-label="${aria}">${paths}<circle cx="60" cy="60" r="56" fill="none" stroke="#e3cd94" stroke-width="1"/></svg><ul>${leg}</ul></div><div class="pie-tot">รวมทั้งสิ้น ${baht(tot)} บาท</div></div>`;
+}
 function renderResult(){
   const el=document.getElementById("result");
   if(window._golden&&window._golden.length){
@@ -389,6 +525,7 @@ function renderResult(){
     const foot=hasMoney?`<tr><td colspan="3" style="text-align:right">รวมกองมรดก</td><td colspan="2">${baht(est.estate)} บาท</td></tr>`+ownRow:`<tr><td colspan="3" style="text-align:right">รวม</td><td>${fmt(tot)}</td></tr>`;
     h+=`<div class="bar" role="img" aria-label="สัดส่วนส่วนแบ่งมรดก">${bar}</div><div style="overflow-x:auto"><table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody><tfoot>${foot}</tfoot></table></div>`;
     if(showOwn)h+=`<div class="steps"><b>สรุปยอดที่คู่สมรสได้รับทั้งหมด</b><br>ส่วนมรดกตามตาราง ${baht(spInherit)} บาท + ส่วนสินสมรสของตนเอง ${baht(est.spouseOwn)} บาท = <b>${baht(spInherit+est.spouseOwn)} บาท</b></div>`;
+    if(hasMoney)h+=pieHtml(r,est);
     h+=buildAudit(r,est,stop,moneyInput);
     h+=`<div class="btns"><button type="button" class="pri" id="share">🔗 แชร์เครื่องมือนี้</button><button type="button" id="copy">📋 คัดลอกผล</button><button type="button" id="reset">↺ ล้างค่า</button></div>`;
   }else{
@@ -443,6 +580,7 @@ document.addEventListener("input",e=>{
 render();
 </script>
 
+
 <script>
 // ===== เมนูความรู้ (เนื้อหาคงที่ สรุปจากหน้านี้เอง ผู้เชี่ยวชาญควรตรวจก่อนเผยแพร่) =====
 const PROJECT_NAME="คำนวณส่วนแบ่งมรดกไทย"; // << เปลี่ยนชื่อโปรเจกต์ที่นี่
@@ -454,14 +592,60 @@ const KNOW=[
  {k:"E",t:"พินัยกรรมและผู้ไม่มีสิทธิ",h:"<p>หากมีพินัยกรรม ให้ปันตามพินัยกรรมก่อน ส่วนที่เหลือตกแก่ทายาทโดยธรรม (ม.1620) ผู้ถูกกำจัดมิให้รับมรดก ดู ม.1604-1607 พระภิกษุ ดู ม.1622-1623</p>"},
  {k:"F",t:"ไม่มีทายาท",h:"<p>ไม่มีทายาทและไม่มีผู้รับพินัยกรรม มรดกตกแก่แผ่นดิน ภายใต้สิทธิของเจ้าหนี้กองมรดก (ม.1753)</p>"}];
 (function(){
- const $=id=>document.getElementById(id),body=document.body,kb=$("kbody");
+ const $=id=>document.getElementById(id),body=document.body;
+ const btn=$("menuBtn"),icon=$("menuIcon"),panel=$("kpanel"),scrim=$("scrim"),list=$("klist"),back=$("kback"),vt=$("kvtitle"),vb=$("kvbody");
+ const outside=[document.querySelector(".hero"),document.querySelector("main"),document.querySelector("footer")];
+ const narrow=window.matchMedia("(max-width:479.98px)");
+ let cur=0;
  $("brand").textContent=PROJECT_NAME;
- function list(){kb.innerHTML="<h2>ความรู้เรื่องการแบ่งมรดก</h2>"+KNOW.map((x,i)=>`<button type="button" class="kitem" data-i="${i}"><b>${x.k}</b><span>${x.t}</span></button>`).join("");}
- function show(i){const x=KNOW[i];kb.innerHTML=`<button type="button" class="kback">‹ กลับ</button><h2>${x.k}. ${x.t}</h2>${x.h}<div class="draft">เนื้อหาสรุปเบื้องต้น ไม่ใช่คำปรึกษาทางกฎหมาย</div>`;}
- function open(o){body.classList.toggle("kopen",o);$("menuBtn").setAttribute("aria-expanded",o);$("kpanel").setAttribute("aria-hidden",!o);if(o){list();$("kclose").focus()}else $("menuBtn").focus();}
- $("menuBtn").onclick=()=>open(true);$("kclose").onclick=$("scrim").onclick=()=>open(false);
- document.addEventListener("keydown",e=>{if(e.key==="Escape"&&body.classList.contains("kopen"))open(false)});
- kb.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.classList.contains("kitem"))show(+b.dataset.i);else if(b.classList.contains("kback"))list();});
+ // สร้างรายการหมวดด้วย DOM + textContent
+ KNOW.forEach((x,i)=>{
+  const li=document.createElement("li"),b=document.createElement("button"),k=document.createElement("span"),t=document.createElement("span");
+  b.type="button";b.className="kitem";b.dataset.i=i;b.setAttribute("aria-controls","kview");b.setAttribute("aria-current","false");
+  k.className="kk";k.setAttribute("aria-hidden","true");k.textContent=x.k;t.textContent=x.t;
+  b.append(k,t);li.append(b);list.append(li);
+ });
+ const items=()=>Array.from(list.querySelectorAll(".kitem"));
+ const isOpen=()=>body.classList.contains("kopen");
+ function select(i){
+  cur=i;
+  items().forEach((b,j)=>b.setAttribute("aria-current",j===i?"true":"false"));
+  vt.textContent=KNOW[i].k+". "+KNOW[i].t;
+  vb.innerHTML=KNOW[i].h; // เนื้อหาคงที่ที่เราเขียนเอง ไม่ใช่ข้อความจากผู้ใช้
+ }
+ function showList(){panel.classList.remove("detail");const b=items()[cur];if(b)b.focus()}
+ function showDetail(){panel.classList.add("detail");back.focus()}
+ function open(o){
+  body.classList.toggle("kopen",o);
+  btn.setAttribute("aria-expanded",String(o));
+  btn.setAttribute("aria-label",o?"ปิดเมนูความรู้เรื่องมรดก":"เปิดเมนูความรู้เรื่องมรดก");
+  icon.textContent=o?"✕":"☰";
+  outside.forEach(el=>{if(!el)return;if(o)el.setAttribute("inert","");else el.removeAttribute("inert")});
+  if(o){select(cur);panel.classList.remove("detail");panel.scrollTop=0;const b=items()[cur];if(b)b.focus()}
+  else btn.focus();
+ }
+ btn.addEventListener("click",()=>open(!isOpen()));
+ scrim.addEventListener("click",()=>open(false));
+ back.addEventListener("click",showList);
+ list.addEventListener("click",e=>{
+  const b=e.target.closest(".kitem");if(!b)return;
+  select(+b.dataset.i);
+  if(narrow.matches)showDetail();
+ });
+ const onNarrow=()=>{if(!narrow.matches)panel.classList.remove("detail")};
+ if(narrow.addEventListener)narrow.addEventListener("change",onNarrow);else if(narrow.addListener)narrow.addListener(onNarrow);
+ document.addEventListener("keydown",e=>{
+  if(!isOpen())return;
+  if(e.key==="Escape"){e.preventDefault();open(false);return}
+  if(e.key!=="Tab")return;
+  // focus trap: ปุ่ม ✕ + องค์ประกอบที่มองเห็นในแผง
+  const f=[btn].concat(Array.from(panel.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')).filter(el=>!el.disabled&&el.getClientRects().length>0));
+  const first=f[0],last=f[f.length-1],a=document.activeElement;
+  if(!f.includes(a)){e.preventDefault();(e.shiftKey?last:first).focus();return}
+  if(e.shiftKey&&a===first){e.preventDefault();last.focus()}
+  else if(!e.shiftKey&&a===last){e.preventDefault();first.focus()}
+ });
+ select(0);
 })();
 </script>
 </body>
