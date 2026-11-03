@@ -144,6 +144,18 @@ input.num:focus{outline:3px solid var(--navy-mid);outline-offset:1px;border-colo
 .audit li.ok .ic{color:var(--ok)}.audit li.warn .ic{color:var(--warn)}.audit li.stop .ic{color:var(--stop)}.audit li.skip{opacity:.7}
 .audit small{color:var(--mute);font-size:.95rem}
 
+.pie{margin-top:14px;padding:12px 14px;border:1px solid var(--gold-line);border-radius:12px;background:#fff}
+.pie>b{color:var(--navy)}
+.pie-in{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:10px}
+.pie svg{flex:none;width:150px;height:150px;margin:0 auto}
+.pie ul{flex:1 1 220px;min-width:0;list-style:none;margin:0;padding:0}
+.pie li{display:flex;align-items:flex-start;gap:6px;padding:7px 0;border-top:1px solid var(--line)}
+.pie li:first-child{border-top:0}
+.pie li .dot{flex:none;margin-top:8px}
+.pie .pw{flex:1;min-width:0}.pie .pw small{display:block;color:var(--mute);font-size:.95rem}
+.pie .pv{flex:none;text-align:right;font-weight:700;color:var(--navy)}.pie .pv small{display:block;font-weight:400;color:var(--mute);font-size:.95rem}
+.pie-tot{margin-top:8px;padding-top:8px;border-top:1px solid var(--gold-line);text-align:right;font-weight:700;color:var(--navy)}
+
 /* ---------- Footer ---------- */
 footer{background:var(--navy);color:rgba(255,255,255,.78);border-top:1px solid var(--gold-line);padding:28px 20px 36px;text-align:center;font-size:1rem}
 footer .disc{max-width:var(--maxw);margin:0 auto 10px;padding:10px 16px;border:1px solid var(--gold-line);border-radius:12px;color:var(--white);font-weight:600}
@@ -459,6 +471,20 @@ function buildAudit(r,est,stop,moneyInput){
   st.push({t:"6 แสดงผลรายบุคคล",s:off?"skip":r.shares.length?"ok":"skip",x:off?SK:r.shares.length?"แสดงสัดส่วน"+(moneyInput&&!(w.unclear||est.flags.includes("jointDebtExceeds"))?" จำนวนเงิน และเปอร์เซ็นต์":""):"ไม่มีผู้รับ"});
   return `<div class="audit"><b>ลำดับการตรวจ 6 ขั้น</b><ol>`+st.map(x=>`<li class="${x.s}"><span class="ic">${ICON[x.s]}</span><div>${x.t}<br><small>${x.x}</small></div></li>`).join("")+`</ol></div>`;
 }
+function pieHtml(r,est){
+  // แผนภูมิวงกลม: ยอดที่แต่ละกลุ่มทายาทได้รับจริง (คู่สมรส = มรดก + ส่วนสินสมรสของตนเอง)
+  const sl=r.shares.map((s,i)=>{const each=est.estate*s.each.n/s.each.d;const own=s.kind==="spouse"&&state.spouse?est.spouseOwn:0;
+    return {who:s.who,count:s.count,each,own,v:each*s.count+own,c:COLORS[i%COLORS.length]}}).filter(x=>x.v>0);
+  const tot=sl.reduce((a,x)=>a+x.v,0);if(!(tot>0))return "";
+  let a0=-Math.PI/2,paths="";
+  const pt=a=>(60+56*Math.cos(a)).toFixed(3)+" "+(60+56*Math.sin(a)).toFixed(3);
+  sl.forEach(x=>{const f=x.v/tot;
+    if(f>=0.9999){paths+=`<circle cx="60" cy="60" r="56" fill="${x.c}"/>`;return}
+    const a1=a0+f*2*Math.PI;paths+=`<path d="M60 60L${pt(a0)}A56 56 0 ${f>0.5?1:0} 1 ${pt(a1)}Z" fill="${x.c}" stroke="#fff" stroke-width="1.5"/>`;a0=a1});
+  const leg=sl.map(x=>`<li><span class="dot" style="background:${x.c}"></span><span class="pw">${x.who}${x.count>1?` (${x.count} คน คนละ ${baht(x.each)} บาท)`:""}${x.own>0?`<small>มรดก ${baht(x.each)} + ส่วนสินสมรสของตนเอง ${baht(x.own)} บาท</small>`:""}</span><span class="pv">${baht(x.v)} บาท<small>${(x.v/tot*100).toFixed(2)}%</small></span></li>`).join("");
+  const aria="สัดส่วนยอดรวมที่ได้รับ: "+sl.map(x=>x.who+" "+(x.v/tot*100).toFixed(1)+"%").join(", ");
+  return `<div class="pie"><b>แผนภูมิยอดรวมที่แต่ละฝ่ายได้รับ</b><div class="pie-in"><svg viewBox="0 0 120 120" role="img" aria-label="${aria}">${paths}<circle cx="60" cy="60" r="56" fill="none" stroke="#e3cd94" stroke-width="1"/></svg><ul>${leg}</ul></div><div class="pie-tot">รวมทั้งสิ้น ${baht(tot)} บาท</div></div>`;
+}
 function renderResult(){
   const el=document.getElementById("result");
   if(window._golden&&window._golden.length){
@@ -499,6 +525,7 @@ function renderResult(){
     const foot=hasMoney?`<tr><td colspan="3" style="text-align:right">รวมกองมรดก</td><td colspan="2">${baht(est.estate)} บาท</td></tr>`+ownRow:`<tr><td colspan="3" style="text-align:right">รวม</td><td>${fmt(tot)}</td></tr>`;
     h+=`<div class="bar" role="img" aria-label="สัดส่วนส่วนแบ่งมรดก">${bar}</div><div style="overflow-x:auto"><table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody><tfoot>${foot}</tfoot></table></div>`;
     if(showOwn)h+=`<div class="steps"><b>สรุปยอดที่คู่สมรสได้รับทั้งหมด</b><br>ส่วนมรดกตามตาราง ${baht(spInherit)} บาท + ส่วนสินสมรสของตนเอง ${baht(est.spouseOwn)} บาท = <b>${baht(spInherit+est.spouseOwn)} บาท</b></div>`;
+    if(hasMoney)h+=pieHtml(r,est);
     h+=buildAudit(r,est,stop,moneyInput);
     h+=`<div class="btns"><button type="button" class="pri" id="share">🔗 แชร์เครื่องมือนี้</button><button type="button" id="copy">📋 คัดลอกผล</button><button type="button" id="reset">↺ ล้างค่า</button></div>`;
   }else{
