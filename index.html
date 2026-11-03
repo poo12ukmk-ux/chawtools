@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>คำนวณส่วนแบ่งมรดกไทย ทายาทโดยธรรม | ป.พ.พ. ม.1629-1645</title>
+<meta name="description" content="เครื่องมือคำนวณส่วนแบ่งมรดกตามกฎหมายไทยกรณีไม่มีพินัยกรรม ตาม ป.พ.พ. มาตรา 1629-1645 กดเลือกทายาท ดูผลทันที ใช้ฟรี">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap">
+<!-- Open Graph: เปลี่ยน URL ให้ตรงกับเว็บจริงของคุณ และเพิ่ม og:image (ขนาดแนะนำ 1200x630) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="คำนวณส่วนแบ่งมรดกไทย">
+<meta property="og:description" content="กรณีไม่มีพินัยกรรม ใครได้เท่าไหร่ตามกฎหมาย กดเลือกทายาท ดูผลทันที">
+<meta property="og:locale" content="th_TH">
+<!-- <meta property="og:url" content="https://ชื่อคุณ.github.io/inheritance/"> -->
+<!-- <meta property="og:image" content="https://ชื่อคุณ.github.io/inheritance/og.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1e3a8a">
+<style>
+:root{--bg:#f1f5f9;--card:#fff;--ink:#0f172a;--mute:#64748b;--line:#e2e8f0;--pri:#1e3a8a;--acc:#2563eb;--ok:#16a34a;--warn:#d97706}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Sarabun","Noto Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
+header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:28px 16px 36px;text-align:center}
+header h1{margin:0 0 6px;font-size:1.6rem}
+header p{margin:0 auto;max-width:640px;font-size:.92rem;opacity:.9}
+main{max-width:720px;margin:-18px auto 40px;padding:0 12px}
+.card{background:var(--card);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:16px;margin-bottom:14px}
+.card h2{margin:0 0 2px;font-size:1.05rem;display:flex;align-items:center;gap:8px}
+.badge{background:var(--pri);color:#fff;border-radius:99px;font-size:.75rem;padding:1px 9px}
+.hint{color:var(--mute);font-size:.85rem;margin:2px 0 10px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row label{flex:1;font-size:.95rem}
+.stepper{display:flex;align-items:center;gap:0}
+.stepper button{width:40px;height:40px;border:1px solid var(--line);background:#f8fafc;font-size:1.3rem;cursor:pointer;color:var(--pri)}
+.stepper button:first-child{border-radius:10px 0 0 10px}
+.stepper button:last-child{border-radius:0 10px 10px 0}
+.stepper button:active{background:#e2e8f0}
+.stepper span{min-width:44px;height:40px;display:flex;align-items:center;justify-content:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-weight:600}
+.branch{border-left:3px solid var(--acc);background:#f8fafc;border-radius:0 10px 10px 0;margin:6px 0 6px 10px;padding:4px 10px}
+.branch>.t{font-size:.82rem;color:var(--acc);font-weight:600;margin-top:4px}
+.check{display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:6px 0}
+.check input{width:22px;height:22px;margin-top:2px;accent-color:var(--acc)}
+.locked{opacity:.45;pointer-events:none}
+.lockmsg{font-size:.85rem;color:var(--warn);margin-top:6px}
+#result{border-left:6px solid var(--ok)}
+#result.warn{border-left-color:var(--warn)}
+#result h2{font-size:1.1rem}
+.verdict{margin:6px 0 12px;font-size:.95rem}
+.bar{display:flex;height:26px;border-radius:8px;overflow:hidden;margin:8px 0 12px;background:var(--line)}
+.bar div{height:100%}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center}
+th{background:#f1f5f9;font-weight:600}
+td:first-child,th:first-child{text-align:left}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+tfoot td{font-weight:700;background:#f8fafc}
+.btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.btns button{flex:1;min-width:130px;padding:11px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:.95rem;cursor:pointer;font-family:inherit}
+.btns .pri{background:var(--pri);color:#fff;border-color:var(--pri)}
+.notes{font-size:.82rem;color:var(--mute)}
+.notes ul{padding-left:18px;margin:6px 0}
+input.num{width:150px;max-width:45%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;font:inherit;text-align:right}
+input.num:focus,button:focus-visible,.check input:focus-visible{outline:3px solid #93c5fd;outline-offset:1px}
+.alert{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:8px 12px;margin:8px 0;font-size:.88rem}
+.alert ul{margin:4px 0 0;padding-left:18px}
+.steps{font-size:.86rem;background:#f8fafc;border-radius:10px;padding:8px 12px;margin-top:12px}
+.steps ol{margin:4px 0 0;padding-left:20px}
+.audit{font-size:.84rem;background:#f8fafc;border-radius:10px;padding:8px 12px;margin-top:12px}
+.audit ol{list-style:none;margin:6px 0 0;padding:0}
+.audit li{display:flex;gap:8px;padding:5px 0;border-top:1px solid var(--line)}
+.audit li:first-child{border-top:0}
+.audit .ic{width:20px;font-weight:700;text-align:center}
+.audit li.ok .ic{color:var(--ok)}.audit li.warn .ic{color:var(--warn)}.audit li.stop .ic{color:#dc2626}.audit li.skip{opacity:.55}
+.audit small{color:var(--mute)}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid var(--line);padding:8px 12px}
+.brand{flex:1;font-weight:600;color:var(--pri);font-size:1.05rem}
+#menuBtn{width:44px;height:44px;border:1px solid var(--line);border-radius:10px;background:#f8fafc;font-size:1.4rem;cursor:pointer;color:var(--pri)}
+#scrim{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:30;display:none}
+#kpanel{position:fixed;top:0;right:0;bottom:0;width:min(420px,92vw);background:#fff;z-index:40;transform:translateX(100%);transition:transform .2s;overflow-y:auto;padding:16px;box-shadow:-4px 0 16px rgba(0,0,0,.15)}
+body.kopen #kpanel{transform:none}body.kopen #scrim{display:block}
+#kpanel h2{margin:0 0 10px;font-size:1.1rem}
+.kitem{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:12px;margin-bottom:8px;border:1px solid var(--line);border-radius:10px;background:#f8fafc;font:inherit;cursor:pointer}
+.kitem b{background:var(--pri);color:#fff;border-radius:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex:none}
+.kclose,.kback{border:0;background:none;font:inherit;color:var(--acc);cursor:pointer;padding:6px 0}
+#kbody{font-size:.92rem}#kbody table{font-size:.85rem;margin:8px 0}
+.draft{font-size:.78rem;color:var(--warn);margin-top:10px}
+footer{text-align:center;font-size:.78rem;color:var(--mute);padding:0 16px 30px}
+</style>
+</head>
+<body>
+<div class="topbar"><span class="brand" id="brand"></span><button type="button" id="menuBtn" aria-label="เปิดเมนูความรู้เรื่องมรดก" aria-expanded="false" aria-controls="kpanel">☰</button></div>
+<div id="scrim"></div>
+<aside id="kpanel" role="dialog" aria-label="ความรู้เรื่องการแบ่งมรดก" aria-hidden="true"><button type="button" class="kclose" id="kclose">✕ ปิด</button><div id="kbody"></div></aside>
+<header>
+  <h1>⚖️ คำนวณส่วนแบ่งมรดกไทย</h1>
+  <p>ทายาทโดยธรรมตาม ป.พ.พ. มาตรา 1629-1645 กรณีไม่มีพินัยกรรมหรือพินัยกรรมไม่ครบ กดเลือกแล้วดูผลทันที</p>
+</header>
+<main>
+  <div id="form"></div>
+  <div id="result" class="card" aria-live="polite"></div>
+  <div class="card notes">
+    <b>ข้อควรทราบ</b>
+    <ul>
+      <li>หากมีพินัยกรรม ให้ปันตามพินัยกรรมก่อน ส่วนที่ไม่ได้จำหน่ายจึงตกแก่ทายาทโดยธรรม (ม.1620)</li>
+      <li>ถ้าผู้ตายสมรสแล้ว ต้องแบ่งสินสมรสกับคู่สมรสก่อน (ม.1625(1) ประกอบ ม.1533) เฉพาะส่วนของผู้ตายเท่านั้นที่เป็นมรดกที่นำมาคำนวณนี้</li>
+      <li>ผู้ที่ถูกกำจัดมิให้รับมรดกหรือไม่เป็นทายาท ดู ม.1604-1607</li>
+      <li>คู่สมรสในที่นี้รวมคู่สมรสเพศเดียวกันที่จดทะเบียนสมรสตาม ป.พ.พ. ฉบับที่ 24 พ.ศ. 2567 (บังคับใช้ 23 ม.ค. 2568)</li>
+      <li>ทายาทรับผิดในหนี้กองมรดกไม่เกินทรัพย์มรดกที่ได้รับ (ม.1601)</li>
+      <li>พระภิกษุเรียกมรดกในฐานะทายาทไม่ได้ เว้นแต่สึกแล้วเรียกภายในอายุความ (ม.1622) และทรัพย์ที่ได้มาขณะอยู่ในสมณเพศ ตกเป็นของวัด (ม.1623)</li>
+      <li>ไม่มีทายาทและไม่มีผู้รับพินัยกรรม มรดกตกแก่แผ่นดิน ภายใต้สิทธิของเจ้าหนี้กองมรดก (ม.1753)</li>
+    </ul>
+  </div>
+</main>
+<footer>เครื่องมือนี้เพื่อความเข้าใจเบื้องต้นเท่านั้น ไม่ใช่คำปรึกษาทางกฎหมาย ควรตรวจสอบตัวบทฉบับปัจจุบันและปรึกษาทนายความก่อนดำเนินการจริง</footer>
+
+<script>
+// ==LOGIC==
+const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
+const F=(n,d=1)=>{const g=gcd(n,d)||1;return{n:n/g,d:d/g}};
+const fmul=(a,b)=>F(a.n*b.n,a.d*b.d);
+const fdivInt=(a,k)=>F(a.n,a.d*k);
+const fadd=(a,b)=>F(a.n*b.d+b.n*a.d,a.d*b.d);
+const ONE=F(1),ZERO=F(0);
+const node=()=>({live:0,kids:[]});
+const hasHeir=t=>t.live>0||t.kids.some(hasHeir);
+const units=t=>t.live+t.kids.filter(hasHeir).length;
+
+function distribute(label,tree,total,path=""){
+  const kids=tree.kids.filter(hasHeir);
+  const n=tree.live+kids.length;
+  if(n===0)return[];
+  const unit=fdivInt(total,n);
+  let out=[];
+  if(tree.live){
+    out.push({who:path?`${label} สาย ${path} (รับมรดกแทนที่)`:label,each:unit,count:tree.live});
+  }
+  kids.forEach((k,i)=>{out=out.concat(distribute(label,k,unit,path?`${path}.${i+1}`:String(i+1)))});
+  return out;
+}
+
+// ===== ชั้น 1: ตารางกฎ (ตัวเลขทั้งหมดอยู่ที่นี่ที่เดียว ผูกกับมาตรา) =====
+const TIERS=[
+  {no:1,name:"ผู้สืบสันดาน",sec:"1629(1)",key:"children",label:"บุตร/ผู้สืบสันดาน"},
+  {no:2,name:"บิดามารดา",sec:"1629(2)",key:"parents",label:"บิดา/มารดา",flat:true},
+  {no:3,name:"พี่น้องร่วมบิดามารดาเดียวกัน",sec:"1629(3)",key:"fullSib",label:"พี่น้องร่วมบิดามารดา"},
+  {no:4,name:"พี่น้องร่วมบิดาหรือร่วมมารดาเดียวกัน",sec:"1629(4)",key:"halfSib",label:"พี่น้องร่วมบิดาหรือมารดา"},
+  {no:5,name:"ปู่ ย่า ตา ยาย",sec:"1629(5)",key:"grand",label:"ปู่/ย่า/ตา/ยาย",flat:true},
+  {no:6,name:"ลุง ป้า น้า อา",sec:"1629(6)",key:"uncles",label:"ลุง/ป้า/น้า/อา"},
+];
+// ม.1635: (1) ลำดับ 1 = เท่ากับบุตร, (4) ไม่มีทายาท = ทั้งหมด (จัดการในโค้ดเพราะไม่ใช่สัดส่วนคงที่)
+const SPOUSE_RULES=[
+  {sec:"1635(2)",desc:"คู่สมรสได้กึ่งหนึ่ง",tiers:[2,3],spouse:[1,2]},
+  {sec:"1635(3)",desc:"คู่สมรสได้สองในสาม",tiers:[4,5,6],spouse:[2,3]},
+];
+function validateRules(){
+  const seen=[];
+  for(const R of SPOUSE_RULES){
+    const [a,b]=R.spouse;
+    if(!(a>0&&b>a))throw new Error("กฎ "+R.sec+" ไม่ถูกต้อง");
+    for(const t of R.tiers){if(t<2||t>6||seen.includes(t))throw new Error("กฎ "+R.sec+" ซ้ำหรือผิดลำดับ");seen.push(t)}
+  }
+  if(seen.length!==5)throw new Error("ตารางกฎคู่สมรสต้องครอบคลุมลำดับ 2-6 ครบ");
+}
+validateRules();
+
+function compute(s){
+  for(const T of TIERS){
+    const group=T.flat?{live:s[T.key],kids:[]}:s[T.key];
+    const n=units(group);
+    if(n===0)continue; // ม.1630 ว.1
+    const {no:order,name,sec,label}=T;
+    if(order===1){
+      const bigN=n+s.parents+(s.spouse?1:0);
+      const unit=F(1,bigN);
+      let shares=[];
+      if(s.spouse)shares.push({kind:"spouse",who:"คู่สมรส (ได้เสมือนทายาทชั้นบุตร)",each:unit,count:1});
+      if(s.parents)shares.push({who:"บิดา/มารดา (ได้เสมือนทายาทชั้นบุตร)",each:unit,count:s.parents});
+      shares=shares.concat(distribute(label,group,F(n,bigN)));
+      const parts=[`${name} [ม.${sec}]`];
+      if(s.parents)parts.push("บิดามารดาร่วมรับเสมือนบุตร [ม.1630 ว.2]");
+      if(s.spouse)parts.push("คู่สมรสรับเสมือนบุตร [ม.1635(1)]");
+      return{order,rule:s.spouse?"1635(1)":null,note:parts.join(" + ")+" ทุกคนได้ส่วนเท่ากัน [ม.1633]",shares};
+    }
+    if(!s.spouse)return{order,rule:null,note:`${name} [ม.${sec}] รับมรดกทั้งหมด [ม.1633]`,shares:distribute(label,group,ONE)};
+    const R=SPOUSE_RULES.find(r=>r.tiers.includes(order));
+    if(!R)throw new Error("ไม่มีกฎส่วนแบ่งคู่สมรสสำหรับลำดับ "+order);
+    const sShare=F(R.spouse[0],R.spouse[1]),gTotal=F(R.spouse[1]-R.spouse[0],R.spouse[1]);
+    return{order,rule:R.sec,note:`${name} [ม.${sec}] ร่วมกับคู่สมรส [ม.${R.sec} ${R.desc}]`,
+      shares:[{kind:"spouse",who:"คู่สมรส",each:sShare,count:1}].concat(distribute(label,group,gTotal))};
+  }
+  if(s.spouse)return{order:0,rule:"1635(4)",note:"ไม่มีทายาทลำดับ 1-6: คู่สมรสรับมรดกทั้งหมด [ม.1635(4)]",shares:[{kind:"spouse",who:"คู่สมรส",each:ONE,count:1}]};
+  return{order:0,rule:null,note:"ยังไม่มีทายาทโดยธรรม: หากไม่มีทายาทและไม่มีผู้รับพินัยกรรม มรดกตกแก่แผ่นดิน [ม.1753]",shares:[]};
+}
+const fmt=f=>`${f.n}/${f.d} (${(f.n/f.d*100).toFixed(2)}%)`;
+// ขั้น 2-4: แยกสินสมรส -> แบ่งครึ่ง (ม.1625(1)+1533) -> หากองมรดกสุทธิ (ม.1599-1601)
+function computeEstate(i){
+  const n=v=>Math.max(0,Number(v)||0);
+  const personal=n(i.personal),personalDebt=n(i.personalDebt);
+  const joint=i.spouse?n(i.joint):0,jointDebt=i.spouse?n(i.jointDebt):0;
+  const flags=[];
+  if(jointDebt>joint)flags.push('jointDebtExceeds');
+  const netJoint=Math.max(0,joint-jointDebt);   // หนี้ร่วมชำระจากสินสมรสก่อนแบ่ง
+  const spouseOwn=i.spouse?netJoint/2:0;          // ส่วนของคู่สมรสในฐานะเจ้าของ ไม่ใช่มรดก
+  const gross=personal+netJoint/2;
+  if(personalDebt>gross)flags.push('estateInsolvent');
+  const estate=Math.max(0,gross-personalDebt);
+  return{estate,spouseOwn,netJoint,totalAssets:personal+netJoint,personal,personalDebt,flags};
+}
+// ===== ชั้น 2: Golden cases (ผลที่คาดหวังต้องมาจากตัวบท ไม่ใช่จากผลของโปรแกรม) =====
+// status: "caselaw" = มีฎีกายืนยันผลตรงกรณี, "statute" = ตามตัวบท ผู้เขียนตรวจเอง ยังรอผู้เชี่ยวชาญลงนาม
+const _T=(live,kids=[])=>({live,kids});
+const _S=o=>({spouse:false,children:node(),parents:0,fullSib:node(),halfSib:node(),grand:0,uncles:node(),...o});
+const GOLDEN=[
+ {id:"G01",name:"ไม่มีทายาท ไม่มีคู่สมรส",cite:"ม.1753",status:"statute",inp:_S({}),order:0,exp:[]},
+ {id:"G02",name:"คู่สมรสอย่างเดียว",cite:"ม.1635(4)",status:"statute",inp:_S({spouse:true}),order:0,exp:["1/1×1"]},
+ {id:"G03",name:"บุตร 1",cite:"ม.1629(1), 1633",status:"statute",inp:_S({children:_T(1)}),order:1,exp:["1/1×1"]},
+ {id:"G04",name:"บุตร 3",cite:"ม.1633",status:"statute",inp:_S({children:_T(3)}),order:1,exp:["1/3×3"]},
+ {id:"G05",name:"คู่สมรส + บุตร 2",cite:"ม.1635(1)",status:"statute",inp:_S({spouse:true,children:_T(2)}),order:1,exp:["1/3×3"]},
+ {id:"G06",name:"คู่สมรส + บุตร 5",cite:"ม.1635(1)",status:"statute",inp:_S({spouse:true,children:_T(5)}),order:1,exp:["1/6×6"]},
+ {id:"G07",name:"บุตร 1 + บิดามารดา 2",cite:"ม.1630 ว.2",status:"statute",inp:_S({children:_T(1),parents:2}),order:1,exp:["1/3×3"]},
+ {id:"G08",name:"บุตร 1 + มารดา 1",cite:"ม.1630 ว.2",status:"statute",inp:_S({children:_T(1),parents:1}),order:1,exp:["1/2×2"]},
+ {id:"G09",name:"คู่สมรส + บุตร 2 + บิดามารดา 2",cite:"ม.1630 ว.2, 1635(1)",status:"statute",inp:_S({spouse:true,children:_T(2),parents:2}),order:1,exp:["1/5×5"]},
+ {id:"G10",name:"คู่สมรส + บุตร 3 + บิดามารดา 2 (ทุกคนส่วนเท่ากัน)",cite:"ม.1629(1), 1630 ว.2, 1635(1) ฎีกาที่อ้างในหน้า ม.1501 ของ legardy (ไม่ทราบเลขฎีกา)",status:"caselaw",inp:_S({spouse:true,children:_T(3),parents:2}),order:1,exp:["1/6×6"]},
+ {id:"G11",name:"บุตร 1 + บุตรตายก่อนมีหลาน 2 (รับมรดกแทนที่)",cite:"ม.1639",status:"statute",inp:_S({children:_T(1,[_T(2)])}),order:1,exp:["1/2×1","1/4×2"]},
+ {id:"G12",name:"บุตรตาย 2 สาย สายละ 1 + บุตรมีชีวิต 1",cite:"ม.1639, 1631",status:"statute",inp:_S({children:_T(1,[_T(1),_T(1)])}),order:1,exp:["1/3×3"]},
+ {id:"G13",name:"รับมรดกแทนที่ 3 ชั้น (เหลน 2)",cite:"ม.1639, 1631",status:"statute",inp:_S({children:_T(0,[_T(0,[_T(2)])])}),order:1,exp:["1/2×2"]},
+ {id:"G14",name:"คู่สมรส + บุตร 1 + บุตรตายมีหลาน 2",cite:"ม.1635(1), 1639",status:"statute",inp:_S({spouse:true,children:_T(1,[_T(2)])}),order:1,exp:["1/3×2","1/6×2"]},
+ {id:"G15",name:"สายผู้สืบสันดานที่ไม่มีทายาท ไม่นับเป็นหน่วย",cite:"ม.1639",status:"statute",inp:_S({children:_T(2,[_T(0)])}),order:1,exp:["1/2×2"]},
+ {id:"G16",name:"บิดามารดา 2",cite:"ม.1629(2)",status:"statute",inp:_S({parents:2}),order:2,exp:["1/2×2"]},
+ {id:"G17",name:"บิดาหรือมารดา 1",cite:"ม.1629(2)",status:"statute",inp:_S({parents:1}),order:2,exp:["1/1×1"]},
+ {id:"G18",name:"คู่สมรส + บิดามารดา 2 (คู่สมรส 1/2 ไม่ใช่ 2/3)",cite:"ม.1635(2)",status:"statute",inp:_S({spouse:true,parents:2}),order:2,exp:["1/2×1","1/4×2"]},
+ {id:"G19",name:"คู่สมรส + มารดา 1 (คู่สมรส 1/2)",cite:"ม.1635(2)",status:"statute",inp:_S({spouse:true,parents:1}),order:2,exp:["1/2×2"]},
+ {id:"G20",name:"บิดา 1 + พี่น้องร่วมบิดามารดา 2 (ตัดสิทธิพี่น้อง)",cite:"ม.1630 ว.1",status:"statute",inp:_S({parents:1,fullSib:_T(2)}),order:2,exp:["1/1×1"]},
+ {id:"G21",name:"พี่น้องร่วมบิดามารดา 3",cite:"ม.1629(3)",status:"statute",inp:_S({fullSib:_T(3)}),order:3,exp:["1/3×3"]},
+ {id:"G22",name:"คู่สมรส + พี่น้องร่วมบิดามารดา 2 (คู่สมรสกึ่งหนึ่ง)",cite:"ม.1635(2) ฎ.3884/2560 (ตามที่ legardy อ้าง)",status:"caselaw",inp:_S({spouse:true,fullSib:_T(2)}),order:3,exp:["1/2×1","1/4×2"]},
+ {id:"G23",name:"พี่น้องร่วมบิดามารดา 1 + พี่ตายมีหลาน 2",cite:"ม.1639",status:"statute",inp:_S({fullSib:_T(1,[_T(2)])}),order:3,exp:["1/2×1","1/4×2"]},
+ {id:"G24",name:"คู่สมรส + พี่น้อง 1 + พี่ตายมีหลาน 2",cite:"ม.1635(2), 1639",status:"statute",inp:_S({spouse:true,fullSib:_T(1,[_T(2)])}),order:3,exp:["1/2×1","1/4×1","1/8×2"]},
+ {id:"G25",name:"พี่น้องต่างบิดา/มารดา 2",cite:"ม.1629(4)",status:"statute",inp:_S({halfSib:_T(2)}),order:4,exp:["1/2×2"]},
+ {id:"G26",name:"คู่สมรส + พี่น้องต่างบิดา/มารดา 2 (คู่สมรส 2/3)",cite:"ม.1635(3)",status:"statute",inp:_S({spouse:true,halfSib:_T(2)}),order:4,exp:["2/3×1","1/6×2"]},
+ {id:"G27",name:"พี่น้องร่วมบิดามารดา 1 + ต่างบิดา/มารดา 2 (ตัดสิทธิ)",cite:"ม.1630 ว.1",status:"statute",inp:_S({fullSib:_T(1),halfSib:_T(2)}),order:3,exp:["1/1×1"]},
+ {id:"G28",name:"ปู่ย่าตายาย 4",cite:"ม.1629(5)",status:"statute",inp:_S({grand:4}),order:5,exp:["1/4×4"]},
+ {id:"G29",name:"คู่สมรส + ปู่ย่าตายาย 2 (คู่สมรส 2/3)",cite:"ม.1635(3)",status:"statute",inp:_S({spouse:true,grand:2}),order:5,exp:["2/3×1","1/6×2"]},
+ {id:"G30",name:"ลุงป้าน้าอา 2",cite:"ม.1629(6)",status:"statute",inp:_S({uncles:_T(2)}),order:6,exp:["1/2×2"]},
+ {id:"G31",name:"คู่สมรส + ลุงป้าน้าอา 1 (คู่สมรส 2/3)",cite:"ม.1635(3)",status:"statute",inp:_S({spouse:true,uncles:_T(1)}),order:6,exp:["2/3×1","1/3×1"]},
+ {id:"G32",name:"ลุง 1 + ลุงตายมีบุตร 2",cite:"ม.1639",status:"statute",inp:_S({uncles:_T(1,[_T(2)])}),order:6,exp:["1/2×1","1/4×2"]},
+ {id:"G33",name:"ปู่ 1 + ลุง 2 (ตัดสิทธิลุง)",cite:"ม.1630 ว.1",status:"statute",inp:_S({grand:1,uncles:_T(2)}),order:5,exp:["1/1×1"]},
+ {id:"G34",name:"บุตร 1 + พี่น้อง 3 + ปู่ย่า 2 (ตัดสิทธิทั้งหมดที่ต่ำกว่า)",cite:"ม.1630 ว.1",status:"statute",inp:_S({children:_T(1),fullSib:_T(3),grand:2}),order:1,exp:["1/1×1"]},
+ {id:"G35",name:"คู่สมรส + บิดามารดา 2 + พี่น้อง 5 (พี่น้องถูกตัดสิทธิ)",cite:"ม.1630 ว.1, 1635(2)",status:"statute",inp:_S({spouse:true,parents:2,fullSib:_T(5)}),order:2,exp:["1/2×1","1/4×2"]},
+];
+// กรณีจำนวนเงิน: คาดหวังคำนวณมือจากตัวบท
+const ESTATE_GOLDEN=[
+ {id:"E01",name:"สินสมรส 1,000,000 คู่สมรส + มารดา 1 ไม่มีบุตร",cite:"ม.1625(1), 1533, 1635(2) ฎ.2857/2558 (การแบ่งสินสมรสครึ่งหนึ่ง)",status:"caselaw",inp:_S({spouse:true,parents:1}),money:{personal:0,joint:1000000,jointDebt:0,personalDebt:0},estate:500000,spouseOwn:500000,each:[250000,250000]},
+ {id:"E02",name:"คู่สมรส + บุตร 2 มีสินส่วนตัว สินสมรส หนี้ร่วม และหนี้กองมรดก",cite:"ม.1625(1), 1533, 1599-1601, 1635(1)",status:"statute",inp:_S({spouse:true,children:_T(2)}),money:{personal:1000000,joint:4000000,jointDebt:1000000,personalDebt:100000},estate:2400000,spouseOwn:1500000,each:[800000,800000,800000]},
+ {id:"E03",name:"ไม่มีคู่สมรส บุตร 1 หักหนี้",cite:"ม.1599-1601",status:"statute",inp:_S({children:_T(1)}),money:{personal:600000,joint:0,jointDebt:0,personalDebt:100000},estate:500000,spouseOwn:0,each:[500000]},
+ {id:"E04",name:"หนี้เกินทรัพย์ กองมรดกเป็น 0",cite:"ม.1601",status:"statute",inp:_S({children:_T(1)}),money:{personal:100,joint:0,jointDebt:0,personalDebt:500},estate:0,spouseOwn:0,each:[0]},
+];
+function sigShares(sh){const m={};sh.forEach(x=>{const k=x.each.n+"/"+x.each.d;m[k]=(m[k]||0)+x.count});return Object.keys(m).map(k=>k+"×"+m[k]).sort()}
+function eachBaht(r,est){return r.shares.flatMap(x=>Array(x.count).fill(Math.round(est.estate*x.each.n/x.each.d*100)/100)).sort((a,b)=>a-b)}
+function runGolden(){
+  const bad=[];
+  for(const g of GOLDEN){
+    try{
+      const r=compute(g.inp),got=sigShares(r.shares).join(","),exp=g.exp.slice().sort().join(",");
+      if(got!==exp||r.order!==g.order)bad.push(`${g.id} ${g.name}: ได้ ${got||"-"} (ลำดับ ${r.order}) คาดหวัง ${exp||"-"} (ลำดับ ${g.order})`);
+    }catch(e){bad.push(g.id+": "+e.message)}
+  }
+  for(const g of ESTATE_GOLDEN){
+    try{
+      const est=computeEstate({spouse:g.inp.spouse,...g.money}),r=compute(g.inp),got=eachBaht(r,est);
+      if(est.estate!==g.estate||est.spouseOwn!==g.spouseOwn||got.join()!==g.each.slice().sort((a,b)=>a-b).join())
+        bad.push(`${g.id} ${g.name}: กองมรดก ${est.estate} สินสมรสของคู่สมรส ${est.spouseOwn} ต่อคน [${got}] คาดหวัง ${g.estate}/${g.spouseOwn}/[${g.each}]`);
+    }catch(e){bad.push(g.id+": "+e.message)}
+  }
+  return bad;
+}
+// ==END LOGIC==
+window._golden=runGolden();
+
+// ---------- state ----------
+const MAXD=3;
+const freshMoney=()=>({personal:'',joint:'',jointDebt:'',personalDebt:''});
+const freshWarn=()=>({will:false,disq:false,dispute:false,unclear:false});
+const state={spouse:false,children:node(),parents:0,fullSib:node(),halfSib:node(),grand:0,uncles:node(),money:freshMoney(),warn:freshWarn()};
+const getNode=p=>p.split("/").reduce((o,k,i)=>i===0?o[k]:o.kids[+k],state);
+const COLORS=["#2563eb","#16a34a","#d97706","#dc2626","#7c3aed","#0891b2","#db2777","#65a30d","#ea580c","#4f46e5"];
+
+// ---------- render ----------
+const step=(act,path,val,min=0)=>`<div class="stepper"><button type="button" data-act="${act}-" data-p="${path}" aria-label="ลด">−</button><span>${val}</span><button type="button" data-act="${act}+" data-p="${path}" aria-label="เพิ่ม">+</button></div>`;
+const row=(label,ctrl)=>`<div class="row"><label>${label}</label>${ctrl.replace('aria-label="ลด"',`aria-label="ลด ${label}"`).replace('aria-label="เพิ่ม"',`aria-label="เพิ่ม ${label}"`)}</div>`;
+
+function treeHtml(path,t,who,depth){
+  let h=row(`${who}ที่ยังมีชีวิต (คน)`,step("live",path,t.live));
+  if(depth<MAXD){
+    h+=row(`${who}ที่ตายก่อนเจ้ามรดก และมีผู้สืบสันดาน (สาย)`,step("kid",path,t.kids.length));
+    t.kids.forEach((k,i)=>{
+      h+=`<div class="branch"><div class="t">▸ สายที่ ${i+1} · ผู้สืบสันดานของบุคคลนี้</div>${treeHtml(path+"/"+i,k,"ผู้สืบสันดาน",depth+1)}</div>`;
+    });
+  }
+  return h;
+}
+const card=(no,title,hint,body,locked,lockMsg)=>`<section class="card ${locked?"locked":""}"><h2><span class="badge">${no}</span>${title}</h2><div class="hint">${hint}</div>${body}</section>${locked?`<div class="lockmsg" style="margin:-8px 4px 12px">${lockMsg}</div>`:""}`;
+
+function renderForm(){
+  const hasKids=units(state.children)>0;
+  const noKids=!hasKids;
+  const noParents=state.parents===0;
+  const noFull=units(state.fullSib)===0;
+  const noHalf=units(state.halfSib)===0;
+  const noGrand=state.grand===0;
+  let h="";
+  h+=card("1","คู่สมรสและบุตร","รวมบุตรบุญธรรม และบุตรนอกกฎหมายที่บิดารับรองแล้ว (ม.1627)",
+    `<label class="check"><input type="checkbox" id="spouse" ${state.spouse?"checked":""}><span>เจ้ามรดกมีคู่สมรสที่จดทะเบียนสมรสและยังมีชีวิตอยู่<br><small style="color:var(--mute)">แยกกันอยู่แต่ยังไม่หย่า ถือว่ามี (ม.1628)</small></span></label>`+
+    treeHtml("children",state.children,"บุตร",0));
+  h+=card("2","บิดามารดา",hasKids?"ถ้ามีบุตร บิดามารดาที่มีชีวิตได้ส่วนเสมือนบุตร (ม.1630 ว.2)":"ไม่มีการรับมรดกแทนที่ (ม.1641)",
+    row("บิดามารดาที่ยังมีชีวิต (คน)",step("parents","parents",state.parents)));
+  const lock3=!noKids||!noParents;
+  h+=card("3","พี่น้องร่วมบิดามารดาเดียวกัน","ใช้เมื่อไม่มีลำดับ 1 และ 2",treeHtml("fullSib",state.fullSib,"พี่น้องร่วมบิดามารดา",0),lock3,"ปิดไว้เพราะมีทายาทลำดับก่อนหน้า (ม.1630 ว.1)");
+  const lock4=lock3||!noFull;
+  h+=card("4","พี่น้องร่วมบิดาหรือร่วมมารดาเดียวกัน","ใช้เมื่อไม่มีลำดับ 1-3",treeHtml("halfSib",state.halfSib,"พี่น้องต่างบิดา/มารดา",0),lock4,"ปิดไว้เพราะมีทายาทลำดับก่อนหน้า (ม.1630 ว.1)");
+  const lock5=lock4||!noHalf;
+  h+=card("5","ปู่ ย่า ตา ยาย","ใช้เมื่อไม่มีลำดับ 1-4 · ไม่มีการรับมรดกแทนที่ (ม.1641)",row("ที่ยังมีชีวิต (คน, สูงสุด 4)",step("grand","grand",state.grand)),lock5,"ปิดไว้เพราะมีทายาทลำดับก่อนหน้า (ม.1630 ว.1)");
+  const lock6=lock5||!noGrand;
+  h+=card("6","ลุง ป้า น้า อา","ใช้เมื่อไม่มีลำดับ 1-5",treeHtml("uncles",state.uncles,"ลุง/ป้า/น้า/อา",0),lock6,"ปิดไว้เพราะมีทายาทลำดับก่อนหน้า (ม.1630 ว.1)");
+  const m=state.money,inp=(k,l,ph)=>`<div class="row"><label for="m_${k}">${l}</label><input class="num" id="m_${k}" data-m="${k}" type="text" inputmode="decimal" placeholder="${ph}" value="${m[k]}"></div>`;
+  h+=`<section class="card"><h2><span class="badge">7</span>ทรัพย์สินและหนี้ (ไม่บังคับ)</h2><div class="hint">กรอกเพื่อให้แสดงจำนวนเงินและเปอร์เซ็นต์รายบุคคล หน่วยเป็นบาท</div>`
+    +inp("personal","สินส่วนตัวของผู้ตาย (ม.1471)","0")
+    +(state.spouse?inp("joint","สินสมรสรวม (ม.1474)","0")+inp("jointDebt","หนี้ร่วมที่ต้องชำระจากสินสมรส","0"):`<div class="hint">ไม่มีคู่สมรส จึงไม่มีสินสมรสให้แบ่ง</div>`)
+    +inp("personalDebt","หนี้และค่าใช้จ่ายของกองมรดก (เช่น ค่าทำศพ ม.1649)","0")+`</section>`;
+  const w=state.warn,wc=(k,l)=>`<label class="check"><input type="checkbox" data-w="${k}" ${w[k]?"checked":""}><span>${l}</span></label>`;
+  h+=`<section class="card"><h2><span class="badge">8</span>ตรวจก่อนใช้ผล</h2><div class="hint">ติ๊กพินัยกรรม / ผู้สละหรือถูกกำจัด / ข้อพิพาท → ระบบหยุดคำนวณ · ติ๊กทรัพย์ไม่ชัดเจน → แสดงเฉพาะสัดส่วน ไม่แสดงเงิน</div>`
+    +wc("will","ผู้ตายทำพินัยกรรมไว้ (แม้เพียงบางส่วน)")+wc("disq","มีทายาทที่สละมรดกหรือถูกกำจัดมิให้รับมรดก")+wc("unclear","ไม่แน่ชัดว่าทรัพย์สินใดเป็นสินสมรสหรือสินส่วนตัว")+wc("dispute","มีข้อพิพาทเรื่องกรรมสิทธิ์ ทายาท หรือจำนวนทรัพย์สิน")+`</section>`;
+  document.getElementById("form").innerHTML=h;
+}
+
+const baht=v=>v.toLocaleString("th-TH",{minimumFractionDigits:0,maximumFractionDigits:2});
+const pct=f=>(f.n/f.d*100).toFixed(2)+"%";
+const WARN={will:"มีพินัยกรรม: ต้องแบ่งตามพินัยกรรมก่อน (ม.1620) ผลนี้ใช้ได้เฉพาะส่วนที่พินัยกรรมไม่ได้จัดการ และต้องตรวจเรื่องส่วนที่พินัยกรรมไม่มีผล",disq:"มีผู้สละมรดกหรือถูกกำจัด: ต้องตรวจว่าใครรับมรดกแทนที่ได้ (ม.1604-1607, 1612, 1639) ผลนี้ยังไม่ได้นำมาคิด",unclear:"ทรัพย์สินที่แยกไม่ได้ว่าเป็นสินสมรสหรือไม่: ผู้อ้างว่าเป็นสินส่วนตัวมีหน้าที่พิสูจน์ (ม.1474) ผลจำนวนเงินอาจคลาดเคลื่อน",dispute:"มีข้อพิพาท: ควรให้ศาลหรือทนายความวินิจฉัยก่อนแบ่งจริง",estateInsolvent:"หนี้และค่าใช้จ่ายมากกว่ากองมรดก: ทายาทรับผิดไม่เกินทรัพย์มรดก (ม.1601) กองมรดกจึงคิดเป็น 0",jointDebtExceeds:"หนี้ร่วมมากกว่าสินสมรส: ส่วนที่เกินอาจเป็นภาระส่วนตัวของคู่สมรสที่ยังมีชีวิต ต้องตรวจเพิ่ม"};
+const LBL={will:"มีพินัยกรรม",disq:"มีผู้สละ/ถูกกำจัดสิทธิ",unclear:"ทรัพย์ไม่ชัดว่าเป็นสินสมรส",dispute:"มีข้อพิพาท"};
+const ICON={ok:"✓",warn:"⚠",stop:"⛔",skip:"–"};
+function buildAudit(r,est,stop,moneyInput){
+  const w=state.warn,st=[],B=baht;
+  const off=stop.length>0,SK="ไม่ได้ดำเนินการ เพราะหยุดคำนวณที่ขั้น 1";
+  st.push({t:"1 ตรวจสถานะทางกฎหมาย (ม.1599, 1600, 1620)",s:off?"stop":"ok",x:off?"พบ: "+stop.map(k=>LBL[k]).join(", ")+" จึงหยุดคำนวณอัตโนมัติ":"ไม่มีพินัยกรรม ผู้สละ/ถูกกำจัดสิทธิ หรือข้อพิพาท (ตามที่ผู้ใช้ระบุ)"});
+  st.push({t:"2 จำแนกทรัพย์สิน (ม.1471-1474)",s:off?"skip":!moneyInput?"skip":w.unclear?"warn":"ok",x:off?SK:!moneyInput?"ไม่ได้กรอกทรัพย์สิน แสดงเป็นสัดส่วนอย่างเดียว":w.unclear?"ทรัพย์สินบางส่วนไม่ชัดเจน ไม่แสดงจำนวนเงิน":`สินส่วนตัว ${B(est.personal)} บาท · สินสมรสสุทธิ ${B(est.netJoint)} บาท (ตามที่ผู้ใช้จำแนก)`});
+  const hasJ=state.spouse&&est.netJoint>0;
+  st.push({t:"3 แบ่งสินสมรสก่อน (ม.1625(1), 1533)",s:off||!hasJ?"skip":est.flags.includes("jointDebtExceeds")?"warn":"ok",x:off?SK:!hasJ?"ไม่มีสินสมรสให้แบ่ง":`คู่สมรสได้ ${B(est.spouseOwn)} บาทในฐานะเจ้าของ ส่วนของผู้ตาย ${B(est.netJoint/2)} บาท เป็นมรดก`});
+  st.push({t:"4 หากองมรดกสุทธิ (ม.1599-1601)",s:off||!moneyInput?"skip":est.flags.includes("estateInsolvent")?"warn":"ok",x:off?SK:!moneyInput?"ไม่ได้กรอกทรัพย์สิน":`กองมรดกสุทธิ ${B(est.estate)} บาท`+(est.flags.includes("estateInsolvent")?" (หนี้เกินทรัพย์ ทายาทรับผิดไม่เกินทรัพย์มรดก)":"")});
+  st.push({t:"5 ตรวจทายาทตามลำดับ (ม.1629-1635, 1639)",s:off?"skip":r.shares.length?"ok":"warn",x:off?SK:r.shares.length?`ใช้ทายาทลำดับ ${r.order||"คู่สมรสอย่างเดียว"}${r.rule?` · กฎส่วนแบ่ง ม.${r.rule}`:""}`:"ยังไม่มีทายาทโดยธรรมที่กรอก"});
+  st.push({t:"6 แสดงผลรายบุคคล",s:off?"skip":r.shares.length?"ok":"skip",x:off?SK:r.shares.length?"แสดงสัดส่วน"+(moneyInput&&!(w.unclear||est.flags.includes("jointDebtExceeds"))?" จำนวนเงิน และเปอร์เซ็นต์":""):"ไม่มีผู้รับ"});
+  return `<div class="audit"><b>ลำดับการตรวจ 6 ขั้น</b><ol>`+st.map(x=>`<li class="${x.s}"><span class="ic">${ICON[x.s]}</span><div>${x.t}<br><small>${x.x}</small></div></li>`).join("")+`</ol></div>`;
+}
+function renderResult(){
+  const el=document.getElementById("result");
+  if(window._golden&&window._golden.length){
+    el.className="card warn";
+    el.innerHTML=`<h2>⛔ ระบบตรวจตัวเองพบความผิดพลาด</h2><div class="alert"><b>ผลทดสอบมาตรฐานภายในไม่ผ่าน จึงปิดการแสดงผลเพื่อป้องกันตัวเลขผิด</b><ul>${window._golden.map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
+    return;
+  }
+  const r=compute(state);
+  const est=computeEstate({spouse:state.spouse,...state.money});
+  const stop=["will","disq","dispute"].filter(k=>state.warn[k]);
+  const blockMoney=state.warn.unclear||est.flags.includes("jointDebtExceeds");
+  const moneyInput=est.totalAssets>0||est.personalDebt>0;
+  const hasMoney=est.estate>0&&!blockMoney;
+  window._est=est;
+  if(stop.length){
+    el.className="card warn";window._last=null;
+    el.innerHTML=`<h2>⛔ ไม่สามารถคำนวณอัตโนมัติได้</h2><div class="verdict">กรณีนี้ต้องให้ทนายความหรือศาลวินิจฉัยก่อน เครื่องมือนี้จึงไม่แสดงตัวเลขเพื่อป้องกันผิดพลาด</div><div class="alert"><ul>${stop.map(k=>`<li>${WARN[k]}</li>`).join("")}</ul></div>`+buildAudit(r,est,stop,moneyInput)+`<div class="btns"><button type="button" id="reset">↺ ล้างค่า</button></div>`;
+    return;
+  }
+  const flags=Object.keys(state.warn).filter(k=>state.warn[k]).concat(est.flags);
+  el.className="card"+(r.shares.length&&!flags.length?"":" warn");
+  let h=`<h2>📋 ผลการวินิจฉัย</h2><div class="verdict">${r.note}</div>`;
+  if(flags.length)h+=`<div class="alert"><b>⚠️ โปรดตรวจเพิ่มเติม${blockMoney&&moneyInput?" (แสดงเฉพาะสัดส่วน ไม่แสดงจำนวนเงิน)":""}</b><ul>${flags.map(f=>`<li>${WARN[f]}</li>`).join("")}</ul></div>`;
+  if(r.shares.length){
+    let tot=ZERO;
+    const bar=r.shares.map((s,i)=>{const g=fmul(s.each,F(s.count));tot=fadd(tot,g);
+      return `<div style="width:${(g.n/g.d*100).toFixed(3)}%;background:${COLORS[i%COLORS.length]}" title="${s.who}"></div>`}).join("");
+    const rows=r.shares.map((s,i)=>{
+      const each=hasMoney?est.estate*s.each.n/s.each.d:0;
+      const ofAll=est.totalAssets>0?(each/est.totalAssets*100).toFixed(2)+"%":"-";
+      return `<tr><td><span class="dot" style="background:${COLORS[i%COLORS.length]}"></span>${s.who}</td><td>${s.count}</td><td>${fmt(s.each)}</td>`+(hasMoney?`<td>${baht(each)}</td><td>${ofAll}</td>`:`<td>${fmt(fmul(s.each,F(s.count)))}</td>`)+`</tr>`}).join("");
+    const head=hasMoney?`<th>ทายาท</th><th>คน</th><th>ส่วนต่อคน</th><th>บาทต่อคน</th><th>% ของทรัพย์รวม</th>`:`<th>ทายาท</th><th>คน</th><th>ส่วนต่อคน</th><th>รวมกลุ่ม</th>`;
+    const showOwn=hasMoney&&state.spouse&&est.spouseOwn>0;
+    const spShare=r.shares.find(s=>s.kind==="spouse");
+    const spInherit=spShare?est.estate*spShare.each.n/spShare.each.d:0;
+    const ownPct=est.totalAssets>0?(est.spouseOwn/est.totalAssets*100).toFixed(2)+"%":"-";
+    const ownRow=showOwn?`<tr><td colspan="3" style="text-align:left;font-weight:400;background:#fff">คู่สมรส: ส่วนสินสมรสของตนเอง (แยกต่างหาก ไม่ใช่มรดก ม.1625(1), 1533)</td><td style="font-weight:400;background:#fff">${baht(est.spouseOwn)} บาท</td><td style="font-weight:400;background:#fff">${ownPct}</td></tr>`:"";
+    const foot=hasMoney?`<tr><td colspan="3" style="text-align:right">รวมกองมรดก</td><td colspan="2">${baht(est.estate)} บาท</td></tr>`+ownRow:`<tr><td colspan="3" style="text-align:right">รวม</td><td>${fmt(tot)}</td></tr>`;
+    h+=`<div class="bar" role="img" aria-label="สัดส่วนส่วนแบ่งมรดก">${bar}</div><div style="overflow-x:auto"><table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody><tfoot>${foot}</tfoot></table></div>`;
+    if(showOwn)h+=`<div class="steps"><b>สรุปยอดที่คู่สมรสได้รับทั้งหมด</b><br>ส่วนมรดกตามตาราง ${baht(spInherit)} บาท + ส่วนสินสมรสของตนเอง ${baht(est.spouseOwn)} บาท = <b>${baht(spInherit+est.spouseOwn)} บาท</b></div>`;
+    h+=buildAudit(r,est,stop,moneyInput);
+    h+=`<div class="btns"><button type="button" class="pri" id="share">🔗 แชร์เครื่องมือนี้</button><button type="button" id="copy">📋 คัดลอกผล</button><button type="button" id="reset">↺ ล้างค่า</button></div>`;
+  }else{
+    h+=buildAudit(r,est,stop,moneyInput)+`<div class="btns"><button type="button" id="reset">↺ ล้างค่า</button></div>`;
+  }
+  el.innerHTML=h;
+  window._last=r;
+}
+function render(){renderForm();renderResult()}
+
+// ---------- events ----------
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.id==="reset"){Object.assign(state,{spouse:false,children:node(),parents:0,fullSib:node(),halfSib:node(),grand:0,uncles:node(),money:freshMoney(),warn:freshWarn()});return render()}
+  if(b.id==="share"){
+    const data={title:document.title,text:"คำนวณส่วนแบ่งมรดกไทยตามกฎหมาย",url:location.href};
+    if(navigator.share)navigator.share(data).catch(()=>{});
+    else     navigator.clipboard.writeText(location.href).then(()=>{b.textContent="✓ คัดลอกลิงก์แล้ว"}).catch(()=>{b.textContent="คัดลอกไม่ได้ กรุณาคัดลอกจากแถบที่อยู่"});
+    return;
+  }
+  if(b.id==="copy"){
+    const r=window._last;
+    const e=window._est;
+    const t="ผลคำนวณส่วนแบ่งมรดก\n"+r.note+"\n"+r.shares.map(s=>`- ${s.who}: คนละ ${fmt(s.each)}${e.estate>0?" = "+baht(e.estate*s.each.n/s.each.d)+" บาท":""}${s.count>1?" × "+s.count+" คน":""}`).join("\n")+(e.estate>0?"\nกองมรดกสุทธิ "+baht(e.estate)+" บาท":"")+(e.estate>0&&state.spouse&&e.spouseOwn>0?(()=>{const sp=r.shares.find(s=>s.kind==="spouse");const inh=sp?e.estate*sp.each.n/sp.each.d:0;return "\nคู่สมรสได้ส่วนสินสมรสของตนเอง (แยกจากมรดก) "+baht(e.spouseOwn)+" บาท\nรวมคู่สมรสได้รับทั้งหมด "+baht(inh)+" + "+baht(e.spouseOwn)+" = "+baht(inh+e.spouseOwn)+" บาท"})():"")+"\n(เพื่อความเข้าใจเบื้องต้น ไม่ใช่คำปรึกษาทางกฎหมาย)";
+    navigator.clipboard.writeText(t).then(()=>{b.textContent="✓ คัดลอกแล้ว"}).catch(()=>{b.textContent="คัดลอกไม่ได้"});
+    return;
+  }
+  const act=b.dataset.act;if(!act)return;
+  const p=b.dataset.p,d=act.endsWith("+")?1:-1,key=act.slice(0,-1);
+  if(key==="parents")state.parents=Math.min(2,Math.max(0,state.parents+d));
+  else if(key==="grand")state.grand=Math.min(4,Math.max(0,state.grand+d));
+  else{
+    const t=getNode(p);
+    if(key==="live")t.live=Math.min(50,Math.max(0,t.live+d));
+    if(key==="kid"){if(d>0&&t.kids.length<20)t.kids.push(node());else if(d<0)t.kids.pop()}
+  }
+  const y=window.scrollY;render();
+  // คืนโฟกัสให้ปุ่มเดิม ไม่ให้คีย์บอร์ด/screen reader หลุดหลัง re-render
+  const again=document.querySelector(`button[data-act="${act}"][data-p="${p}"]`);
+  if(again){again.focus({preventScroll:true});window.scrollTo(0,y)}
+});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.id==="spouse"){state.spouse=t.checked;renderForm();renderResult();document.getElementById("spouse").focus({preventScroll:true})}
+  else if(t.dataset.w){state.warn[t.dataset.w]=t.checked;renderResult()}
+});
+document.addEventListener("input",e=>{
+  const k=e.target.dataset.m;if(!k)return;
+  const v=e.target.value.replace(/[^0-9.]/g,"");   // ไม่รับเครื่องหมายลบ/ตัวอักษร
+  state.money[k]=v;renderResult();
+});
+render();
+</script>
+
+<script>
+// ===== เมนูความรู้ (เนื้อหาคงที่ สรุปจากหน้านี้เอง ผู้เชี่ยวชาญควรตรวจก่อนเผยแพร่) =====
+const PROJECT_NAME="คำนวณส่วนแบ่งมรดกไทย"; // << เปลี่ยนชื่อโปรเจกต์ที่นี่
+const KNOW=[
+ {k:"A",t:"ลำดับทายาทโดยธรรม",h:"<p>ทายาทแบ่งเป็น 6 ลำดับ (ม.1629): 1 ผู้สืบสันดาน 2 บิดามารดา 3 พี่น้องร่วมบิดามารดา 4 พี่น้องต่างบิดาหรือมารดา 5 ปู่ย่าตายาย 6 ลุงป้าน้าอา</p><p>ทายาทลำดับต้นตัดสิทธิลำดับถัดไป (ม.1630 ว.1) ยกเว้นบิดามารดาที่ร่วมกับบุตรได้ส่วนเท่าบุตร (ม.1630 ว.2) บุตรที่ตายก่อนมีผู้สืบสันดานรับมรดกแทนที่ (ม.1639)</p>"},
+ {k:"B",t:"ส่วนแบ่งของคู่สมรส",h:"<table><tr><th>ม.1635</th><th>มีทายาทลำดับ</th><th>คู่สมรสได้</th></tr><tr><td>(1)</td><td>1</td><td>เท่าบุตร 1 คน</td></tr><tr><td>(2)</td><td>2, 3</td><td>1/2</td></tr><tr><td>(3)</td><td>4, 5, 6</td><td>2/3</td></tr><tr><td>(4)</td><td>ไม่มี</td><td>ทั้งหมด</td></tr></table>"},
+ {k:"C",t:"สินสมรสและกองมรดก",h:"<p>ถ้าผู้ตายสมรสแล้ว ต้องแบ่งสินสมรสกับคู่สมรสก่อน (ม.1625(1) ประกอบ ม.1533) เฉพาะส่วนของผู้ตายเท่านั้นที่เป็นมรดก ส่วนของคู่สมรสในฐานะเจ้าของไม่ใช่มรดก</p>"},
+ {k:"D",t:"หนี้กองมรดก",h:"<p>ทายาทรับผิดในหนี้กองมรดกไม่เกินทรัพย์มรดกที่ได้รับ (ม.1601) เครื่องมือนี้หักหนี้ก่อนคำนวณ ถ้าหนี้เกินทรัพย์ กองมรดกเป็น 0</p>"},
+ {k:"E",t:"พินัยกรรมและผู้ไม่มีสิทธิ",h:"<p>หากมีพินัยกรรม ให้ปันตามพินัยกรรมก่อน ส่วนที่เหลือตกแก่ทายาทโดยธรรม (ม.1620) ผู้ถูกกำจัดมิให้รับมรดก ดู ม.1604-1607 พระภิกษุ ดู ม.1622-1623</p>"},
+ {k:"F",t:"ไม่มีทายาท",h:"<p>ไม่มีทายาทและไม่มีผู้รับพินัยกรรม มรดกตกแก่แผ่นดิน ภายใต้สิทธิของเจ้าหนี้กองมรดก (ม.1753)</p>"}];
+(function(){
+ const $=id=>document.getElementById(id),body=document.body,kb=$("kbody");
+ $("brand").textContent=PROJECT_NAME;
+ function list(){kb.innerHTML="<h2>ความรู้เรื่องการแบ่งมรดก</h2>"+KNOW.map((x,i)=>`<button type="button" class="kitem" data-i="${i}"><b>${x.k}</b><span>${x.t}</span></button>`).join("");}
+ function show(i){const x=KNOW[i];kb.innerHTML=`<button type="button" class="kback">‹ กลับ</button><h2>${x.k}. ${x.t}</h2>${x.h}<div class="draft">เนื้อหาสรุปเบื้องต้น ไม่ใช่คำปรึกษาทางกฎหมาย</div>`;}
+ function open(o){body.classList.toggle("kopen",o);$("menuBtn").setAttribute("aria-expanded",o);$("kpanel").setAttribute("aria-hidden",!o);if(o){list();$("kclose").focus()}else $("menuBtn").focus();}
+ $("menuBtn").onclick=()=>open(true);$("kclose").onclick=$("scrim").onclick=()=>open(false);
+ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&body.classList.contains("kopen"))open(false)});
+ kb.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.classList.contains("kitem"))show(+b.dataset.i);else if(b.classList.contains("kback"))list();});
+})();
+</script>
+</body>
+</html>
